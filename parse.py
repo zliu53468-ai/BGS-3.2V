@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from datasource.normalize import norm_team
+from normalize import norm_team  # 扁平匯入
 
 def parse_user_text(t: str):
     txt = (t or "").lower().replace("（"," ").replace("）"," ").strip()
@@ -35,5 +35,7 @@ def parse_user_text(t: str):
         a = vs.group(1).strip(); b = vs.group(3).strip()
         teams = [norm_team(league, a), norm_team(league, b)]
 
-    return {"league": league, "legs": legs, "market": market,
-            "risk": profile, "channel": channel, "date": date, "teams": teams}
+    return {
+        "league": league, "legs": legs, "market": market,
+        "risk": profile, "channel": channel, "date": date, "teams": teams
+    }
