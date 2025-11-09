@@ -1,7 +1,7 @@
 import time, requests
 from typing import List, Dict, Tuple
 from config import CFG
-from .normalize import abbr3, season_from_date
+from normalize import abbr3, season_from_date  # 扁平匯入
 
 APIFOOTBALL_KEY = CFG["APIFOOTBALL_KEY"]
 ODDS_API_KEY = CFG["ODDS_API_KEY"]
@@ -77,7 +77,6 @@ def fetch_odds_raw(league_key: str) -> List[Dict]:
         date_iso = e["commence_time"]
         home = e["home_team"]; away = e["away_team"]
         gid = _mk_gid(lg, date_iso, home, away)
-        # 蒐集三種市場（後續 prob_maps 可 cross-use line）
         market_blob = {"moneyline":{}, "spread":{}, "totals":{}}
         for bk in e.get("bookmakers", []):
             bkname = bk["title"]
@@ -110,7 +109,6 @@ def fetch_odds_raw(league_key: str) -> List[Dict]:
                             "line": float(o["point"]), "odds_decimal": float(o["price"])
                         })
                         market_blob["totals"][side] = float(o["point"])
-        # 可選：把 cross 市場資訊附在每條腿上（供 prob_maps 用）
         for L in legs:
             if L["game_id"] == gid:
                 L["_cross"] = market_blob
